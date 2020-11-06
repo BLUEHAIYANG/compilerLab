@@ -114,7 +114,8 @@ void display(struct ASTNode *T,int indent)  //兰：indent用来控制输出时�
                         break;
 	case FLOAT:	        printf("%*cFLAOT：%f\n",indent,' ',T->type_float);
                         break;   
-    case CHAR:          printf("%*cCHAR：%f\n",indent,' ',T->type_char);            //增加char类型的识别；
+    case CHAR:          printf("%*cCHAR：%s\n",indent,' ',T->type_char);  
+                                 //增加char类型的识别；
                         break;  
 	case ASSIGNOP:
 	case AND:

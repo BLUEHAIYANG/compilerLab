@@ -372,7 +372,7 @@ static yyconst short int yy_def[67] =
        64,    1,   64,   64,   64,   64,   64,   64,   65,   64,
        64,   64,   64,   64,   64,   64,   64,   64,   64,   64,
        64,   64,   66,   66,   66,   66,   66,   66,   66,   64,
-       64,   64,   64,   64,   65,   64,   64,   64,   66,   66,
+       64,   64,   64,   64,   64,   64,   64,   64,   66,   66,
        66,   66,   66,   66,   66,   66,   64,   64,   66,   66,
        66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
        66,   66,   66,    0,   64,   64
@@ -436,11 +436,11 @@ int yycolumn=1;
 #define YY_USER_ACTION    	yylloc.first_line=yylloc.last_line=yylineno; \
 	yylloc.first_column=yycolumn;	yylloc.last_column=yycolumn+yyleng-1; yycolumn+=yyleng;
 typedef union {
-	int type_int;
-	int type_float;
-	char type_id[32];
-	int type_char;						//这里的定义似乎有问题：为什么float会被定义为char类型
-	struct node *ptr;
+	int    type_int;
+	float  type_float;
+	char   type_id[32];
+    char   type_char[3];
+	struct ASTNode *ptr;
 } YYLVAL;
 #define YYSTYPE YYLVAL
 
@@ -691,7 +691,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 26 "lex.l"
-{yylval.type_int=atoi(yytext);printf("哈哈哈！找到int辣！"); return INT;}
+{yylval.type_int=atoi(yytext); return INT;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -701,7 +701,7 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 28 "lex.l"
-{yylval.type_char=yytext; return CHAR;}
+{strcpy(yylval.type_char,  yytext); return CHAR;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP

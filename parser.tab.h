@@ -115,7 +115,7 @@ typedef union YYSTYPE
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
-        char   type_char;
+        char   type_char[3];
 	struct ASTNode *ptr;
 
 

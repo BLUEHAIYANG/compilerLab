@@ -9,7 +9,7 @@ typedef union {
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
-    char   type_char;
+    char   type_char[3];
 	struct ASTNode *ptr;
 } YYLVAL;
 #define YYSTYPE YYLVAL
@@ -20,11 +20,12 @@ typedef union {
 id   [A-Za-z][A-Za-z0-9]*  
 int    [0-9]+
 float  ([0-9]*\.[0-9]+)|([0-9]+\.)
+char '[A-Za-z]'
 
 %%
-{int}        {yylval.type_int=atoi(yytext);printf("哈哈哈！找到int辣！"); return INT;}
+{int}        {yylval.type_int=atoi(yytext); return INT;}
 {float}      {yylval.type_float=atof(yytext); return FLOAT;}
-{char}		 {yylval.type_char=yytext; return CHAR;}
+{char}		 {strcpy(yylval.type_char,  yytext); return CHAR;}
 "int"        {strcpy(yylval.type_id,  yytext);return TYPE;}
 "float"      {strcpy(yylval.type_id,  yytext);return TYPE;}
 "char"		 {strcpy(yylval.type_id,  yytext);return TYPE;}

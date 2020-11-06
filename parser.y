@@ -17,7 +17,7 @@ void display(struct ASTNode *,int);
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
-        char   type_char;
+        char   type_char[3];
 	struct ASTNode *ptr;
 };
 
@@ -59,7 +59,14 @@ ExtDef:   Specifier ExtDecList SEMI   {$$=mknode(2,EXT_VAR_DEF,yylineno,$1,$2);}
          |Specifier FuncDec CompSt    {$$=mknode(3,FUNC_DEF,yylineno,$1,$2,$3);}         //该结点对应一个函数定义
          | error SEMI   {$$=NULL;}
          ;
-Specifier:  TYPE    {$$=mknode(0,TYPE,yylineno);strcpy($$->type_id,$1);$$->type=!strcmp($1,"int")?INT:FLOAT;}   //兰兰：这里需要修改一下，以便支持char类型
+Specifier:  TYPE    {$$=mknode(0,TYPE,yylineno);
+                        strcpy($$->type_id,$1);
+                        if(strcmp($1,"int")) $$->type=INT;
+                        if(strcmp($1,"char")) $$->type=CHAR;
+                        if(strcmp($1,"float")) $$->type=FLOAT;
+                        //$$->type=!strcmp($1,"int")?INT:FLOAT;
+                        }   //兰兰：这里需要修改一下，以便支持char类型
+                           //兰兰：这里好像不修改也不影响？
            ;      
 ExtDecList:  VarDec      {$$=$1;}       /*每一个EXT_DECLIST的结点，其第一棵子树对应一个变量名(ID类型的结点),第二棵子树对应剩下的外部变量名*/
            | VarDec COMMA ExtDecList {$$=mknode(2,EXT_DEC_LIST,yylineno,$1,$3);}
@@ -118,7 +125,7 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_i
       | ID            {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}
       | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;}
       | FLOAT         {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
-      | CHAR         {$$=mknode(0,CHAR,yylineno);$$->type_char=$1;$$->type=CHAR;}       //兰兰：增加对char表达式的支持
+      | CHAR         {$$=mknode(0,CHAR,yylineno);strcpy($$->type_char,$1);$$->type=CHAR;}       //兰兰：增加对char表达式的支持
       ;
 Args:    Exp COMMA Args    {$$=mknode(2,ARGS,yylineno,$1,$3);}
        | Exp               {$$=mknode(1,ARGS,yylineno,$1);}
