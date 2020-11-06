@@ -33,13 +33,14 @@ struct ASTNode {
 		  char type_id[33];             //由标识符生成的叶结点
 		  int type_int;                 //由整常数生成的叶结点
 		  float type_float;               //由浮点常数生成的叶结点
+          char type_char;                 //兰：添加一个自定义类型，支持char类型
 	      };
     struct ASTNode *ptr[4];         //由kind确定有多少棵子树
     int place;                     //存放（临时）变量在符号表的位置序号
     char Etrue[15],Efalse[15];       //对布尔表达式的翻译时，真假转移目标的标号
     char Snext[15];               //结点对应语句S执行后的下一条语句位置标号
     struct codenode *code;          //该结点中间代码链表头指针
-    int type;                      //用以标识表达式结点的类型
+    int type;                      //用以标识表达式结点的类型   //兰：不清楚type和kind有何种区别？type是具体的数据类型，比如int char float；kind是笼统的类型，比如等号，表达式等等
     int pos;                       //语法单位所在位置行号
     int offset;                     //偏移量
     int width;                     //占数据字节数

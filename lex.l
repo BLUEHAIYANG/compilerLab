@@ -6,10 +6,11 @@ int yycolumn=1;
 #define YY_USER_ACTION    	yylloc.first_line=yylloc.last_line=yylineno; \
 	yylloc.first_column=yycolumn;	yylloc.last_column=yycolumn+yyleng-1; yycolumn+=yyleng;
 typedef union {
-	int type_int;
-	int type_float;
-	char type_id[32];
-	struct node *ptr;
+	int    type_int;
+	float  type_float;
+	char   type_id[32];
+    char   type_char;
+	struct ASTNode *ptr;
 } YYLVAL;
 #define YYSTYPE YYLVAL
 
@@ -23,8 +24,10 @@ float  ([0-9]*\.[0-9]+)|([0-9]+\.)
 %%
 {int}        {yylval.type_int=atoi(yytext);printf("哈哈哈！找到int辣！"); return INT;}
 {float}      {yylval.type_float=atof(yytext); return FLOAT;}
+{char}		 {yylval.type_char=yytext; return CHAR;}
 "int"        {strcpy(yylval.type_id,  yytext);return TYPE;}
 "float"      {strcpy(yylval.type_id,  yytext);return TYPE;}
+"char"		 {strcpy(yylval.type_id,  yytext);return TYPE;}
 
 "return"     {return RETURN;}
 "if"         {return IF;}

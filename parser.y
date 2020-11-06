@@ -17,6 +17,7 @@ void display(struct ASTNode *,int);
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
+        char   type_char;
 	struct ASTNode *ptr;
 };
 
@@ -27,6 +28,7 @@ void display(struct ASTNode *,int);
 %token <type_int> INT              /*指定INT的语义值是type_int，有词法分析得到的数值*/
 %token <type_id> ID  RELOP TYPE    /*指定ID,RELOP 的语义值是type_id，有词法分析得到的标识符字符串*/
 %token <type_float> FLOAT          /*指定ID的语义值是type_id，有词法分析得到的标识符字符串*/
+%token <type_char> CHAR;
 
 %token DPLUS LP RP LC RC SEMI COMMA      /*用bison对该文件编译时，带参数-d，生成的.tab.h中给这些单词进行编码，可在lex.l中包含parser.tab.h使用这些单词种类码*/
 %token PLUS MINUS STAR DIV ASSIGNOP AND OR NOT IF ELSE WHILE RETURN FOR SWITCH CASE COLON DEFAULT
@@ -57,7 +59,7 @@ ExtDef:   Specifier ExtDecList SEMI   {$$=mknode(2,EXT_VAR_DEF,yylineno,$1,$2);}
          |Specifier FuncDec CompSt    {$$=mknode(3,FUNC_DEF,yylineno,$1,$2,$3);}         //该结点对应一个函数定义
          | error SEMI   {$$=NULL;}
          ;
-Specifier:  TYPE    {$$=mknode(0,TYPE,yylineno);strcpy($$->type_id,$1);$$->type=!strcmp($1,"int")?INT:FLOAT;}   
+Specifier:  TYPE    {$$=mknode(0,TYPE,yylineno);strcpy($$->type_id,$1);$$->type=!strcmp($1,"int")?INT:FLOAT;}   //兰兰：这里需要修改一下，以便支持char类型
            ;      
 ExtDecList:  VarDec      {$$=$1;}       /*每一个EXT_DECLIST的结点，其第一棵子树对应一个变量名(ID类型的结点),第二棵子树对应剩下的外部变量名*/
            | VarDec COMMA ExtDecList {$$=mknode(2,EXT_DEC_LIST,yylineno,$1,$3);}
@@ -116,6 +118,7 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_i
       | ID            {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}
       | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;}
       | FLOAT         {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
+      | CHAR         {$$=mknode(0,CHAR,yylineno);$$->type_char=$1;$$->type=CHAR;}       //兰兰：增加对char表达式的支持
       ;
 Args:    Exp COMMA Args    {$$=mknode(2,ARGS,yylineno,$1,$3);}
        | Exp               {$$=mknode(1,ARGS,yylineno,$1);}

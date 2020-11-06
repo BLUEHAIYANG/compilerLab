@@ -1,22 +1,22 @@
-#include "def.h"
+#include "def.h"    //√
 #include "parser.tab.h"
 
-struct ASTNode * mknode(int num,int kind,int pos,...){
-    struct ASTNode *T=(struct ASTNode *)calloc(sizeof(struct ASTNode),1);
+struct ASTNode * mknode(int num,int kind,int pos,...){//兰：接收可变数量的参数，num指定了可变数量的具体大小
+    struct ASTNode *T=(struct ASTNode *)calloc(sizeof(struct ASTNode),1);//兰：这里calloc的参数使用是否有问题？
     int i=0;
-    T->kind=kind;
-    T->pos=pos;
+    T->kind=kind;       //兰：树节点的kind值设置为kind
+    T->pos=pos;         //兰：pos节点中存放的是当前的行号 yylineno
     va_list pArgs = NULL;
-    va_start(pArgs, pos);
-    for(i=0;i<num;i++)
-        T->ptr[i]= va_arg(pArgs, struct ASTNode *);
-    while (i<4) T->ptr[i++]=NULL;
-    va_end(pArgs);
+    va_start(pArgs, pos);//兰：初始化va_list pArgs
+    for(i=0;i<num;i++)  
+        T->ptr[i]= va_arg(pArgs, struct ASTNode *);//如果有可变数量的参数的话，在这里处理
+    while (i<4) T->ptr[i++]=NULL;//节点最多有四个子节点  如果不到四个，那就把剩下的赋空
+    va_end(pArgs);  //回收内存
     return T;
 }
 
 
-void display(struct ASTNode *T,int indent)
+void display(struct ASTNode *T,int indent)  //兰：indent用来控制输出时每一行的缩进
 {//对抽象语法树的先根遍历
   int i=1;
   struct ASTNode *T0;
@@ -25,7 +25,7 @@ void display(struct ASTNode *T,int indent)
 	switch (T->kind) {
 	case EXT_DEF_LIST:  display(T->ptr[0],indent);    //显示该外部定义（外部变量和函数）列表中的第一个
                         display(T->ptr[1],indent);    //显示该外部定义列表中的其它外部定义
-                        break;
+                        break;                         //兰：Q:为什么在这里不需要打印信息？   LIST类型的都不需要打印信息
 	case EXT_VAR_DEF:   printf("%*c外部变量定义：(%d)\n",indent,' ',T->pos);
                         display(T->ptr[0],indent+3);        //显示外部变量类型
                         printf("%*c变量名：\n",indent+3,' ');
@@ -113,7 +113,9 @@ void display(struct ASTNode *T,int indent)
 	case INT:	        printf("%*cINT：%d\n",indent,' ',T->type_int);
                         break;
 	case FLOAT:	        printf("%*cFLAOT：%f\n",indent,' ',T->type_float);
-                        break;
+                        break;   
+    case CHAR:          printf("%*cCHAR：%f\n",indent,' ',T->type_char);            //增加char类型的识别；
+                        break;  
 	case ASSIGNOP:
 	case AND:
 	case OR:
