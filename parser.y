@@ -23,6 +23,7 @@ void display(struct ASTNode *,int);
 
 //  %type 定义非终结符的语义值类型
 %type  <ptr> program ExtDefList ExtDef  Specifier ExtDecList FuncDec CompSt VarList VarDec ParamDec Stmt StmList DefList Def DecList Dec Exp Args 
+%type  <ptr> Switch_Case
 
 //% token 定义终结符的语义值类型
 %token <type_int> INT              /*指定INT的语义值是type_int，有词法分析得到的数值*/
@@ -32,9 +33,11 @@ void display(struct ASTNode *,int);
 
 %token DPLUS LP RP LC RC SEMI COMMA      /*用bison对该文件编译时，带参数-d，生成的.tab.h中给这些单词进行编码，可在lex.l中包含parser.tab.h使用这些单词种类码*/
 %token PLUS MINUS STAR DIV ASSIGNOP AND OR NOT IF ELSE WHILE RETURN FOR SWITCH CASE COLON DEFAULT
+%token BREAK //兰：自定义的保留字
 /*以下为接在上述token后依次编码的枚举常量，作为AST结点类型标记*/
 %token EXT_DEF_LIST EXT_VAR_DEF FUNC_DEF FUNC_DEC EXT_DEC_LIST PARAM_LIST PARAM_DEC VAR_DEF DEC_LIST DEF_LIST COMP_STM STM_LIST EXP_STMT IF_THEN IF_THEN_ELSE
 %token FUNC_CALL ARGS FUNCTION PARAM ARG CALL LABEL GOTO JLT JLE JGT JGE EQ NEQ
+%token FOR_LOP SWITCH_SHOW SWITCH_CASE
 
 
 %left ASSIGNOP
@@ -60,13 +63,13 @@ ExtDef:   Specifier ExtDecList SEMI   {$$=mknode(2,EXT_VAR_DEF,yylineno,$1,$2);}
          | error SEMI   {$$=NULL;}
          ;
 Specifier:  TYPE    {$$=mknode(0,TYPE,yylineno);
-                        strcpy($$->type_id,$1);
+                        strcpy($$->type_id,$1);                         //兰兰：这里设置了树节点的type_id类型
                         if(strcmp($1,"int")) $$->type=INT;
                         if(strcmp($1,"char")) $$->type=CHAR;
                         if(strcmp($1,"float")) $$->type=FLOAT;
                         //$$->type=!strcmp($1,"int")?INT:FLOAT;
                         }   //兰兰：这里需要修改一下，以便支持char类型
-                           //兰兰：这里好像不修改也不影响？
+                           //兰兰：这里好像不修改也不影响？树节点的type值似乎没什么用处？
            ;      
 ExtDecList:  VarDec      {$$=$1;}       /*每一个EXT_DECLIST的结点，其第一棵子树对应一个变量名(ID类型的结点),第二棵子树对应剩下的外部变量名*/
            | VarDec COMMA ExtDecList {$$=mknode(2,EXT_DEC_LIST,yylineno,$1,$3);}
@@ -91,10 +94,15 @@ StmList: {$$=NULL; }
 Stmt:   Exp SEMI    {$$=mknode(1,EXP_STMT,yylineno,$1);}
       | CompSt      {$$=$1;}      //复合语句结点直接最为语句结点，不再生成新的结点
       | RETURN Exp SEMI   {$$=mknode(1,RETURN,yylineno,$2);}
-      | IF LP Exp RP Stmt %prec LOWER_THEN_ELSE   {$$=mknode(2,IF_THEN,yylineno,$3,$5);}
+      | IF LP Exp RP Stmt %prec LOWER_THEN_ELSE   {$$=mknode(2,IF_THEN,yylineno,$3,$5);}                //兰：这个%prec是个啥？删去它会有归约移进冲突
+      //兰：prec的作用是将该产生式的优先级设定为和LOWER_THEN_ELSE相同
       | IF LP Exp RP Stmt ELSE Stmt   {$$=mknode(3,IF_THEN_ELSE,yylineno,$3,$5,$7);}
       | WHILE LP Exp RP Stmt {$$=mknode(2,WHILE,yylineno,$3,$5);}
+      | FOR LP Exp SEMI Exp SEMI Exp  RP Stmt {$$=mknode(4,FOR_LOP,yylineno,$3,$5,$7,$9);}
+      | SWITCH LP Exp RP LC Switch_Case RC {$$ = mknode(2,SWITCH_SHOW,yylineno,$3,$6);}
       ;
+Switch_Case: CASE Exp COLON StmList BREAK SEMI {$$ = mknode(2,SWITCH_CASE,$2,$4);}
+
 DefList: {$$=NULL; }
         | Def DefList {$$=mknode(2,DEF_LIST,yylineno,$1,$2);}
         | error SEMI   {$$=NULL;}
@@ -107,6 +115,7 @@ DecList: Dec  {$$=mknode(1,DEC_LIST,yylineno,$1);}
 Dec:     VarDec  {$$=$1;}
        | VarDec ASSIGNOP Exp  {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_id,"ASSIGNOP");}
        ;
+        
 Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_id,"ASSIGNOP");}//$$结点type_id空置未用，正好存放运算符
       | Exp AND Exp   {$$=mknode(2,AND,yylineno,$1,$3);strcpy($$->type_id,"AND");}
       | Exp OR Exp    {$$=mknode(2,OR,yylineno,$1,$3);strcpy($$->type_id,"OR");}
@@ -123,7 +132,7 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_i
       | ID LP Args RP {$$=mknode(1,FUNC_CALL,yylineno,$3);strcpy($$->type_id,$1);}
       | ID LP RP      {$$=mknode(0,FUNC_CALL,yylineno);strcpy($$->type_id,$1);}
       | ID            {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}
-      | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;}
+      | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;$$->val=INT;}
       | FLOAT         {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
       | CHAR         {$$=mknode(0,CHAR,yylineno);strcpy($$->type_char,$1);$$->type=CHAR;}       //兰兰：增加对char表达式的支持
       ;

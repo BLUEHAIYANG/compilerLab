@@ -29,6 +29,7 @@ struct codenode {   //三地址TAC代码结点,采用单链表存放中间语言
 struct ASTNode {
         //以下对结点属性定义没有考虑存储效率，只是简单地列出要用到的一些属性
 	int kind;
+    float val;
 	union {
 		  char type_id[33];             //由标识符生成的叶结点
 		  int type_int;                 //由整常数生成的叶结点

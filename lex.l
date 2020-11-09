@@ -20,23 +20,31 @@ typedef union {
 id   [A-Za-z][A-Za-z0-9]*  
 int    [0-9]+
 float  ([0-9]*\.[0-9]+)|([0-9]+\.)
-char '[A-Za-z]'
+char  '[A-Za-z]'
 
 %%
 {int}        {yylval.type_int=atoi(yytext); return INT;}
 {float}      {yylval.type_float=atof(yytext); return FLOAT;}
 {char}		 {strcpy(yylval.type_char,  yytext); return CHAR;}
-"int"        {strcpy(yylval.type_id,  yytext);return TYPE;}
+"//".* 			{}	;//单行去除注释
+[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */ }//多行去除注释
+"int"        {strcpy(yylval.type_id,  yytext);return TYPE;}		//兰：在这里存放了type_id的值
 "float"      {strcpy(yylval.type_id,  yytext);return TYPE;}
 "char"		 {strcpy(yylval.type_id,  yytext);return TYPE;}
+
+"for"		{return FOR;}		//兰：识别for字符
 
 "return"     {return RETURN;}
 "if"         {return IF;}
 "else"       {return ELSE;}
 "while"      {return WHILE;}
+"switch"     {return SWITCH;}
+"case"		 {return CASE;}
+"break"      {return BREAK;}
 
 {id}       {strcpy(yylval.type_id,  yytext); return ID;/*由于关键字的形式也符合表示符的规则，所以把关键字的处理全部放在标识符的前面，优先识别*/}
 ";"			{return SEMI;}
+":"			{return COLON;}		//兰：识别冒号
 ","			{return COMMA;}
 ">"|"<"|">="|"<="|"=="|"!=" {strcpy(yylval.type_id, yytext);;return RELOP;}
 "="			{return ASSIGNOP;}
