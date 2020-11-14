@@ -102,8 +102,9 @@
      FOR_LOP = 318,
      SWITCH_SHOW = 319,
      SWITCH_CASE = 320,
-     UMINUS = 321,
-     LOWER_THEN_ELSE = 322
+     SWITCH_CASE_LIST = 321,
+     UMINUS = 322,
+     LOWER_THEN_ELSE = 323
    };
 #endif
 
@@ -125,7 +126,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 129 "parser.tab.h"
+#line 130 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
