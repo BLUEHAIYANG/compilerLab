@@ -23,7 +23,7 @@ void display(struct ASTNode *,int);
 
 //  %type 定义非终结符的语义值类型
 %type  <ptr> program ExtDefList ExtDef  Specifier ExtDecList FuncDec CompSt VarList VarDec ParamDec Stmt StmList DefList Def DecList Dec Exp Args 
-%type  <ptr> Switch_Case
+%type  <ptr> SwitchCase SwitchCaseList
 
 //% token 定义终结符的语义值类型
 %token <type_int> INT              /*指定INT的语义值是type_int，有词法分析得到的数值*/
@@ -99,9 +99,11 @@ Stmt:   Exp SEMI    {$$=mknode(1,EXP_STMT,yylineno,$1);}
       | IF LP Exp RP Stmt ELSE Stmt   {$$=mknode(3,IF_THEN_ELSE,yylineno,$3,$5,$7);}
       | WHILE LP Exp RP Stmt {$$=mknode(2,WHILE,yylineno,$3,$5);}
       | FOR LP Exp SEMI Exp SEMI Exp  RP Stmt {$$=mknode(4,FOR_LOP,yylineno,$3,$5,$7,$9);}
-      | SWITCH LP Exp RP LC Switch_Case RC {$$ = mknode(2,SWITCH_SHOW,yylineno,$3,$6);}
+      | SWITCH LP Exp RP LC SwitchCase RC {$$ = mknode(2,SWITCH_SHOW,yylineno,$3,$6);}
       ;
-Switch_Case: CASE Exp COLON StmList BREAK SEMI {$$ = mknode(2,SWITCH_CASE,$2,$4);}
+SwitchCaseList : SwitchCase
+        |SwitchCaseList SWITCH_CASE   {$$=NULL} //兰：还未定义该非终结符
+SwitchCase: CASE Exp COLON StmList BREAK SEMI {$$ = mknode(2,SWITCH_CASE,yylineno,$2,$4);}
 
 DefList: {$$=NULL; }
         | Def DefList {$$=mknode(2,DEF_LIST,yylineno,$1,$2);}

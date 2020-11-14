@@ -88,7 +88,7 @@ void display(struct ASTNode *T,int indent)  //兰：indent用来控制输出时�
                         printf("%*cELSE子句：(%d)\n",indent+3,' ',T->pos);
                         display(T->ptr[2],indent+6);      //显示else子句
                         break;
-    case FOR_LOP:       printf("%*cFOR循环语句(IF_THEN_ELSE)：(%d)\n",indent,' ',T->pos);       //兰：for循环语句
+    case FOR_LOP:       printf("%*cFOR循环语句(FOR_LOP)：(%d)\n",indent,' ',T->pos);       //兰：for循环语句
                         printf("%*cFOR循环条件1：\n",indent+3,' ');
                         display(T->ptr[0],indent+6);      //显示条件
                         printf("%*cFOR循环条件2：(%d)\n",indent+3,' ',T->pos);
@@ -98,7 +98,18 @@ void display(struct ASTNode *T,int indent)  //兰：indent用来控制输出时�
                          printf("%*cFOR循环内容：(%d)\n",indent+3,' ',T->pos);
                         display(T->ptr[3],indent+9);      //显示else子句
                         break;
-                       
+    case SWITCH_SHOW:   printf("%*cSwitch语句(SWICH_SHOW)：(%d)\n",indent,' ',T->pos);
+                        printf("%*cSwitch条件：\n",indent+3,' ');
+                        display(T->ptr[0],indent+6);      //显示条件
+                        //printf("%*cSwitch的Case：(%d)\n",indent+3,' ',T->pos);
+                        display(T->ptr[1],indent+6);    
+                        break;  
+    case SWITCH_CASE:   //printf("%*cSwitch的case具体情况(SWICH_CASE)：(%d)\n",indent,' ',T->pos);
+                        printf("%*cCase条件：\n",indent+3,' ');
+                        display(T->ptr[0],indent+6);      //显示条件
+                        printf("%*cCase内容：(%d)\n",indent+3,' ',T->pos);
+                        display(T->ptr[1],indent+6);           
+                        break;  
     case DEF_LIST:      display(T->ptr[0],indent);    //显示该局部变量定义列表中的第一个
                         display(T->ptr[1],indent);    //显示其它局部变量定义
                         break;
