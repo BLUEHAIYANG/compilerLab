@@ -191,7 +191,7 @@ typedef union YYSTYPE
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
-        char   type_char[3];
+        char   type_char;
 	struct ASTNode *ptr;
 
 
@@ -2006,7 +2006,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 139 "parser.y"
-    {(yyval.ptr)=mknode(0,CHAR,yylineno);strcpy((yyval.ptr)->type_char,(yyvsp[(1) - (1)].type_char));(yyval.ptr)->type=CHAR;;}
+    {(yyval.ptr)=mknode(0,CHAR,yylineno);(yyval.ptr)->type_char=(yyvsp[(1) - (1)].type_char);(yyval.ptr)->type=CHAR;;}
     break;
 
   case 58:

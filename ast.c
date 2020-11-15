@@ -92,11 +92,11 @@ void display(struct ASTNode *T,int indent)  //兰：indent用来控制输出时�
                         printf("%*cFOR循环条件1：\n",indent+3,' ');
                         display(T->ptr[0],indent+6);      //显示条件
                         printf("%*cFOR循环条件2：(%d)\n",indent+3,' ',T->pos);
-                        display(T->ptr[1],indent+6);      //显示if子句
+                        display(T->ptr[1],indent+6);      
                         printf("%*cFOR循环条件3：(%d)\n",indent+3,' ',T->pos);
-                        display(T->ptr[2],indent+6);      //显示else子句
+                        display(T->ptr[2],indent+6);     
                          printf("%*cFOR循环内容：(%d)\n",indent+3,' ',T->pos);
-                        display(T->ptr[3],indent+9);      //显示else子句
+                        display(T->ptr[3],indent+9);      
                         break;
     case SWITCH_SHOW:   printf("%*cSwitch语句(SWICH_SHOW)：(%d)\n",indent,' ',T->pos);
                         printf("%*cSwitch条件：\n",indent+3,' ');
@@ -140,7 +140,7 @@ void display(struct ASTNode *T,int indent)  //兰：indent用来控制输出时�
                         break;
 	case FLOAT:	        printf("%*cFLAOT：%f\n",indent,' ',T->type_float);
                         break;   
-    case CHAR:          printf("%*cCHAR：%s\n",indent,' ',T->type_char);  
+    case CHAR:          printf("%*cCHAR：%c\n",indent,' ',T->type_char);  
                                  //增加char类型的识别；
                         break;  
 	case ASSIGNOP:

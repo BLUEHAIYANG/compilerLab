@@ -9,7 +9,7 @@ typedef union {
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
-    char   type_char[3];
+    char   type_char;
 	struct ASTNode *ptr;
 } YYLVAL;
 #define YYSTYPE YYLVAL
@@ -20,12 +20,12 @@ typedef union {
 id   [A-Za-z][A-Za-z0-9]*  
 int    [0-9]+
 float  ([0-9]*\.[0-9]+)|([0-9]+\.)
-char  '[A-Za-z]'
+char  '.'
 
 %%
 {int}        {yylval.type_int=atoi(yytext); return INT;}
 {float}      {yylval.type_float=atof(yytext); return FLOAT;}
-{char}		 {strcpy(yylval.type_char,  yytext); return CHAR;}
+{char}		 {yylval.type_char=*(yytext+1); return CHAR;}
 "//".* 			{}	;//单行去除注释
 [/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */ }//多行去除注释
 "int"        {strcpy(yylval.type_id,  yytext);return TYPE;}		//兰：在这里存放了type_id的值

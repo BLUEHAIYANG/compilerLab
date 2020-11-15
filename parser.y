@@ -17,7 +17,7 @@ void display(struct ASTNode *,int);
 	int    type_int;
 	float  type_float;
 	char   type_id[32];
-        char   type_char[3];
+        char   type_char;
 	struct ASTNode *ptr;
 };
 
@@ -136,7 +136,7 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_i
       | ID            {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}
       | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;$$->val=INT;}
       | FLOAT         {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
-      | CHAR         {$$=mknode(0,CHAR,yylineno);strcpy($$->type_char,$1);$$->type=CHAR;}       //兰兰：增加对char表达式的支持
+      | CHAR         {$$=mknode(0,CHAR,yylineno);$$->type_char=$1;$$->type=CHAR;}       //兰兰：增加对char表达式的支持
       ;
 Args:    Exp COMMA Args    {$$=mknode(2,ARGS,yylineno,$1,$3);}
        | Exp               {$$=mknode(1,ARGS,yylineno,$1);}
