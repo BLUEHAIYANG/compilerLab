@@ -30,6 +30,8 @@ struct ASTNode {
         //以下对结点属性定义没有考虑存储效率，只是简单地列出要用到的一些属性
 	int kind;
     float val;
+    int maxDimension;  //兰：保存数组创建时的维度大小
+    int selectedDimension; //兰：保存数组读取时的选定的维度
 	union {
 		  char type_id[33];             //由标识符生成的叶结点
 		  int type_int;                 //由整常数生成的叶结点

@@ -1,7 +1,12 @@
+char a[7];
+char a[1][5][3][4];
+
+
 int main(){
+    int a[6][7];
     char a;
     int b,c,d;
-    a = '3';
+    a[6] = 1;
     switch(1){
         case 1 :
              m=1;

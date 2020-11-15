@@ -59,6 +59,8 @@ char  '.'
 ")"			{return RP;}
 "{"			{return LC;}
 "}"			{return RC;}
+"["			{return LSB;}
+"]"			{return RSB;}
 [\n]           {yycolumn=1;}   
 [ \r\t]          {}   
 .			{printf("Error type A :Mysterious character \"%s\"\n\t at Line %d\n",yytext,yylineno);}

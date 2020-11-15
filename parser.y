@@ -33,11 +33,11 @@ void display(struct ASTNode *,int);
 
 %token DPLUS LP RP LC RC SEMI COMMA      /*用bison对该文件编译时，带参数-d，生成的.tab.h中给这些单词进行编码，可在lex.l中包含parser.tab.h使用这些单词种类码*/
 %token PLUS MINUS STAR DIV ASSIGNOP AND OR NOT IF ELSE WHILE RETURN FOR SWITCH CASE COLON DEFAULT
-%token BREAK //兰：自定义的保留字
+%token BREAK LSB RSB//兰：自定义的保留字
 /*以下为接在上述token后依次编码的枚举常量，作为AST结点类型标记*/
 %token EXT_DEF_LIST EXT_VAR_DEF FUNC_DEF FUNC_DEC EXT_DEC_LIST PARAM_LIST PARAM_DEC VAR_DEF DEC_LIST DEF_LIST COMP_STM STM_LIST EXP_STMT IF_THEN IF_THEN_ELSE
 %token FUNC_CALL ARGS FUNCTION PARAM ARG CALL LABEL GOTO JLT JLE JGT JGE EQ NEQ
-%token FOR_LOP SWITCH_SHOW SWITCH_CASE SWITCH_CASE_LIST
+%token FOR_LOP SWITCH_SHOW SWITCH_CASE SWITCH_CASE_LIST ARRAY_USE ARRAY_DEFINE
 
 
 %left ASSIGNOP
@@ -45,7 +45,7 @@ void display(struct ASTNode *,int);
 %left AND
 %left RELOP
 %left PLUS MINUS
-%left STAR DIV
+%left STAR DIV LSB RSB
 %right UMINUS NOT DPLUS
 
 %nonassoc LOWER_THEN_ELSE
@@ -74,7 +74,8 @@ Specifier:  TYPE    {$$=mknode(0,TYPE,yylineno);
 ExtDecList:  VarDec      {$$=$1;}       /*每一个EXT_DECLIST的结点，其第一棵子树对应一个变量名(ID类型的结点),第二棵子树对应剩下的外部变量名*/
            | VarDec COMMA ExtDecList {$$=mknode(2,EXT_DEC_LIST,yylineno,$1,$3);}
            ;  
-VarDec:  ID          {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}   //ID结点，标识符符号串存放结点的type_id
+VarDec:  VarDec LSB INT RSB {$$=mknode(1,ARRAY_DEFINE,yylineno,$1);$$->maxDimension=$3;}//兰：这里待添加  兰兰：增加对数组的支持（使用数组时）
+        |ID          {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}   //ID结点，标识符符号串存放结点的type_id
          ;
 FuncDec: ID LP VarList RP   {$$=mknode(1,FUNC_DEC,yylineno,$3);strcpy($$->type_id,$1);}//函数名存放在$$->type_id
 		|ID LP  RP   {$$=mknode(0,FUNC_DEC,yylineno);strcpy($$->type_id,$1);$$->ptr[0]=NULL;}//函数名存放在$$->type_id
@@ -137,6 +138,7 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_i
       | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;$$->val=INT;}
       | FLOAT         {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
       | CHAR         {$$=mknode(0,CHAR,yylineno);$$->type_char=$1;$$->type=CHAR;}       //兰兰：增加对char表达式的支持
+      | Exp LSB Exp RSB {$$=mknode(2,ARRAY_USE,yylineno,$1,$3);}    //兰兰：增加对数组的支持（使用数组时）
       ;
 Args:    Exp COMMA Args    {$$=mknode(2,ARGS,yylineno,$1,$3);}
        | Exp               {$$=mknode(1,ARGS,yylineno,$1);}
