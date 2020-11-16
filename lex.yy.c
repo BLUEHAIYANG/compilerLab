@@ -716,177 +716,177 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 26 "lex.l"
-{yylval.type_int=atoi(yytext); return INT;}
+{printf("常量；int 具体值；%d\n",atoi(yytext));yylval.type_int=atoi(yytext); return INT;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 27 "lex.l"
-{yylval.type_float=atof(yytext); return FLOAT;}
+{printf("常量；float 具体值；%d\n",atof(yytext));yylval.type_float=atof(yytext); return FLOAT;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 28 "lex.l"
-{yylval.type_char=*(yytext+1); return CHAR;}
+{printf("常量；char 具体值；%d\n",(yytext+1));yylval.type_char=*(yytext+1); return CHAR;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 29 "lex.l"
-{}	;//单行去除注释
+{printf("注释\n");}	;//单行去除注释
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 30 "lex.l"
-{ /* DO NOTHING */ }//多行去除注释
+{ /* DO NOTHING */printf("注释\n"); }//多行去除注释
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 31 "lex.l"
-{strcpy(yylval.type_id,  yytext);return TYPE;}		//兰：在这里存放了type_id的值
+{printf("关键字；Type；唯一标识：%d\n",TYPE);strcpy(yylval.type_id,  yytext);return TYPE;}		//兰：在这里存放了type_id的值
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 32 "lex.l"
-{strcpy(yylval.type_id,  yytext);return TYPE;}
+{printf("关键字；Type；唯一标识：%d\n",TYPE);strcpy(yylval.type_id,  yytext);return TYPE;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 33 "lex.l"
-{strcpy(yylval.type_id,  yytext);return TYPE;}
+{printf("关键字；Type；唯一标识：%d\n",TYPE);strcpy(yylval.type_id,  yytext);return TYPE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 35 "lex.l"
-{return FOR;}		//兰：识别for字符
+{printf("关键字；FOR；唯一标识：%d\n",FOR);return FOR;}		//兰：识别for字符
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 37 "lex.l"
-{return RETURN;}
+{printf("关键字；Return；唯一标识：%d\n",RETURN);return RETURN;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 38 "lex.l"
-{return IF;}
+{printf("关键字；if；唯一标识：%d\n",IF);return IF;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 39 "lex.l"
-{return ELSE;}
+{printf("关键字；else；唯一标识：%d\n",ELSE);return ELSE;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 40 "lex.l"
-{return WHILE;}
+{printf("关键字；while；唯一标识：%d\n",WHILE);return WHILE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 41 "lex.l"
-{return SWITCH;}
+{printf("关键字；switch；唯一标识：%d\n",SWITCH);return SWITCH;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 42 "lex.l"
-{return CASE;}
+{printf("关键字；case；唯一标识：%d\n",CASE);return CASE;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 43 "lex.l"
-{return BREAK;}
+{printf("关键字；break；唯一标识：%d\n",BREAK);return BREAK;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 45 "lex.l"
-{strcpy(yylval.type_id,  yytext); return ID;/*由于关键字的形式也符合表示符的规则，所以把关键字的处理全部放在标识符的前面，优先识别*/}
+{printf("标识符；%s；唯一标识：%d\n",yytext,ID);strcpy(yylval.type_id,  yytext); return ID;/*由于关键字的形式也符合表示符的规则，所以把关键字的处理全部放在标识符的前面，优先识别*/}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 46 "lex.l"
-{return SEMI;}
+{printf("界符；;；唯一标识：%d\n",SEMI);return SEMI;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 47 "lex.l"
-{return COLON;}		//兰：识别冒号
+{printf("界符；:；唯一标识：%d\n",COLON);return COLON;}		//兰：识别冒号
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 48 "lex.l"
-{return COMMA;}
+{printf("界符；,；唯一标识：%d\n",COMMA);return COMMA;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 49 "lex.l"
-{strcpy(yylval.type_id, yytext);;return RELOP;}
+{printf("运算符；;；唯一标识：%d\n",RELOP);strcpy(yylval.type_id, yytext);;return RELOP;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 50 "lex.l"
-{return ASSIGNOP;}
+{printf("运算符；=；唯一标识：%d\n",ASSIGNOP);return ASSIGNOP;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 51 "lex.l"
-{return PLUS;}
+{printf("运算符；+；唯一标识：%d\n",PLUS);return PLUS;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 52 "lex.l"
-{return MINUS;}
+{printf("运算符；-；唯一标识：%d\n",MINUS);return MINUS;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 53 "lex.l"
-{return STAR;}
+{printf("运算符；*；唯一标识：%d\n",STAR);return STAR;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 54 "lex.l"
-{return DIV;}
+{printf("运算符；/；唯一标识：%d\n",DIV);return DIV;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 55 "lex.l"
-{return AND;}
+{printf("运算符；&&；唯一标识：%d\n",AND);return AND;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 56 "lex.l"
-{return OR;}
+{printf("运算符；||；唯一标识：%d\n",OR);return OR;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 57 "lex.l"
-{return NOT;}
+{printf("运算符；!；唯一标识：%d\n",NOT);return NOT;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 58 "lex.l"
-{return LP;}
+{printf("界符；(；唯一标识：%d\n",LP);return LP;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 59 "lex.l"
-{return RP;}
+{printf("界符；)；唯一标识：%d\n",RP);return RP;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 60 "lex.l"
-{return LC;}
+{printf("界符；{；唯一标识：%d\n",LC);return LC;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 61 "lex.l"
-{return RC;}
+{printf("界符；}；唯一标识：%d\n",RC);return RC;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 62 "lex.l"
-{return LSB;}
+{printf("界符；[；唯一标识：%d\n",LSB);return LSB;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 63 "lex.l"
-{return RSB;}
+{printf("界符；,；唯一标识：%d\n",RSB);return RSB;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP

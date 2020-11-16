@@ -23,44 +23,44 @@ float  ([0-9]*\.[0-9]+)|([0-9]+\.)
 char  '.'
 
 %%
-{int}        {yylval.type_int=atoi(yytext); return INT;}
-{float}      {yylval.type_float=atof(yytext); return FLOAT;}
-{char}		 {yylval.type_char=*(yytext+1); return CHAR;}
-"//".* 			{}	;//单行去除注释
-[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */ }//多行去除注释
-"int"        {strcpy(yylval.type_id,  yytext);return TYPE;}		//兰：在这里存放了type_id的值
-"float"      {strcpy(yylval.type_id,  yytext);return TYPE;}
-"char"		 {strcpy(yylval.type_id,  yytext);return TYPE;}
+{int}        {printf("常量；int 具体值；%d\n",atoi(yytext));yylval.type_int=atoi(yytext); return INT;}
+{float}      {printf("常量；float 具体值；%d\n",atof(yytext));yylval.type_float=atof(yytext); return FLOAT;}
+{char}		 {printf("常量；char 具体值；%d\n",(yytext+1));yylval.type_char=*(yytext+1); return CHAR;}
+"//".* 			{printf("注释\n");}	;//单行去除注释
+[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]       { /* DO NOTHING */printf("注释\n"); }//多行去除注释
+"int"        {printf("关键字；Type；唯一标识：%d\n",TYPE);strcpy(yylval.type_id,  yytext);return TYPE;}		//兰：在这里存放了type_id的值
+"float"      {printf("关键字；Type；唯一标识：%d\n",TYPE);strcpy(yylval.type_id,  yytext);return TYPE;}
+"char"		 {printf("关键字；Type；唯一标识：%d\n",TYPE);strcpy(yylval.type_id,  yytext);return TYPE;}
 
-"for"		{return FOR;}		//兰：识别for字符
+"for"		{printf("关键字；FOR；唯一标识：%d\n",FOR);return FOR;}		//兰：识别for字符
 
-"return"     {return RETURN;}
-"if"         {return IF;}
-"else"       {return ELSE;}
-"while"      {return WHILE;}
-"switch"     {return SWITCH;}
-"case"		 {return CASE;}
-"break"      {return BREAK;}
+"return"     {printf("关键字；Return；唯一标识：%d\n",RETURN);return RETURN;}
+"if"         {printf("关键字；if；唯一标识：%d\n",IF);return IF;}
+"else"       {printf("关键字；else；唯一标识：%d\n",ELSE);return ELSE;}
+"while"      {printf("关键字；while；唯一标识：%d\n",WHILE);return WHILE;}
+"switch"     {printf("关键字；switch；唯一标识：%d\n",SWITCH);return SWITCH;}
+"case"		 {printf("关键字；case；唯一标识：%d\n",CASE);return CASE;}
+"break"      {printf("关键字；break；唯一标识：%d\n",BREAK);return BREAK;}
 
-{id}       {strcpy(yylval.type_id,  yytext); return ID;/*由于关键字的形式也符合表示符的规则，所以把关键字的处理全部放在标识符的前面，优先识别*/}
-";"			{return SEMI;}
-":"			{return COLON;}		//兰：识别冒号
-","			{return COMMA;}
-">"|"<"|">="|"<="|"=="|"!=" {strcpy(yylval.type_id, yytext);;return RELOP;}
-"="			{return ASSIGNOP;}
-"+"			{return PLUS;}
-"-"			{return MINUS;}
-"*"			{return STAR;}
-"/"			{return DIV;}
-"&&"         {return AND;}
-"||"            {return OR;}
-"!"			{return NOT;}
-"("			{return LP;}
-")"			{return RP;}
-"{"			{return LC;}
-"}"			{return RC;}
-"["			{return LSB;}
-"]"			{return RSB;}
+{id}       {printf("标识符；%s；唯一标识：%d\n",yytext,ID);strcpy(yylval.type_id,  yytext); return ID;/*由于关键字的形式也符合表示符的规则，所以把关键字的处理全部放在标识符的前面，优先识别*/}
+";"			{printf("界符；;；唯一标识：%d\n",SEMI);return SEMI;}
+":"			{printf("界符；:；唯一标识：%d\n",COLON);return COLON;}		//兰：识别冒号
+","			{printf("界符；,；唯一标识：%d\n",COMMA);return COMMA;}
+">"|"<"|">="|"<="|"=="|"!=" {printf("运算符；;；唯一标识：%d\n",RELOP);strcpy(yylval.type_id, yytext);;return RELOP;}
+"="			{printf("运算符；=；唯一标识：%d\n",ASSIGNOP);return ASSIGNOP;}
+"+"			{printf("运算符；+；唯一标识：%d\n",PLUS);return PLUS;}
+"-"			{printf("运算符；-；唯一标识：%d\n",MINUS);return MINUS;}
+"*"			{printf("运算符；*；唯一标识：%d\n",STAR);return STAR;}
+"/"			{printf("运算符；/；唯一标识：%d\n",DIV);return DIV;}
+"&&"         {printf("运算符；&&；唯一标识：%d\n",AND);return AND;}
+"||"            {printf("运算符；||；唯一标识：%d\n",OR);return OR;}
+"!"			{printf("运算符；!；唯一标识：%d\n",NOT);return NOT;}
+"("			{printf("界符；(；唯一标识：%d\n",LP);return LP;}
+")"			{printf("界符；)；唯一标识：%d\n",RP);return RP;}
+"{"			{printf("界符；{；唯一标识：%d\n",LC);return LC;}
+"}"			{printf("界符；}；唯一标识：%d\n",RC);return RC;}
+"["			{printf("界符；[；唯一标识：%d\n",LSB);return LSB;}
+"]"			{printf("界符；,；唯一标识：%d\n",RSB);return RSB;}
 [\n]           {yycolumn=1;}   
 [ \r\t]          {}   
 .			{printf("Error type A :Mysterious character \"%s\"\n\t at Line %d\n",yytext,yylineno);}
