@@ -1,26 +1,21 @@
-char a[7];
-char a[1][5][3][4];
+int g,h,i;
+int a[1];
+int a[2];
+int b[1];//1.数组重名的问题
 
 
 int main(){
-    int a[6][7];//这里的展示是有问题的
+   
     char a;
     int b,c,d;
-    a[6][8] = 1;
-    a='c';
-    switch(1){
-        case a :
-             m=1 - -a;
-             n=1;
-             BREAK;
-        case 2 : 
-              t=2;
-              k=3;
-              break;
-    }
-
-    for(i = 1;i < 6;1){
-        44444;
-    }
+    float e;
+    b=2.2;
+    e=2.1;
+    b+e;
+    aa();           //源代码自带的功能：函数未定义；
+    b= 2+2;      //4.加法的强类型
+    a[1]=1;     //3.使用时数组下标的选择
+    //return e;   //2.检查返回类型
+    //return 1.1
     return 1;
 }

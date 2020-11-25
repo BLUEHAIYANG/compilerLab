@@ -53,7 +53,7 @@ void display(struct ASTNode *,int);
 
 %%
 
-program: ExtDefList  { display($1,0);}     //显示语法树,语义分析
+program: ExtDefList  { display($1,0); semantic_Analysis0($1);}     //显示语法树,语义分析
          ; 
 ExtDefList: {$$=NULL;}
           | ExtDef ExtDefList {$$=mknode(2,EXT_DEF_LIST,yylineno,$1,$2);}   //每一个EXTDEFLIST的结点，其第1棵子树对应一个外部变量声明或函数
@@ -135,8 +135,8 @@ Exp:    Exp ASSIGNOP Exp {$$=mknode(2,ASSIGNOP,yylineno,$1,$3);strcpy($$->type_i
       | ID LP Args RP {$$=mknode(1,FUNC_CALL,yylineno,$3);strcpy($$->type_id,$1);}
       | ID LP RP      {$$=mknode(0,FUNC_CALL,yylineno);strcpy($$->type_id,$1);}
       | ID            {$$=mknode(0,ID,yylineno);strcpy($$->type_id,$1);}
-      | INT           {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;$$->val=INT;}
-      | FLOAT         {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
+      | INT FLOAT          {$$=mknode(0,INT,yylineno);$$->type_int=$1;$$->type=INT;$$->val=INT;}
+      |          {$$=mknode(0,FLOAT,yylineno);$$->type_float=$1;$$->type=FLOAT;}
       | CHAR         {$$=mknode(0,CHAR,yylineno);$$->type_char=$1;$$->type=CHAR;}       //兰兰：增加对char表达式的支持
       | Exp LSB Exp RSB {$$=mknode(2,ARRAY_USE,yylineno,$1,$3);}    //兰兰：增加对数组的支持（使用数组时）
       ;
